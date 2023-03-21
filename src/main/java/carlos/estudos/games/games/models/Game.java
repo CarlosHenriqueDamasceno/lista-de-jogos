@@ -1,28 +1,28 @@
-package carlos.estudos.games.models;
+package carlos.estudos.games.games.models;
 
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import carlos.estudos.games.developers.models.Developer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Entity
+@Data
 @NoArgsConstructor
-public class Developer {
+public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String name;
-    @JsonIgnore
-    @OneToMany(mappedBy = "developer")
-    private List<Game> games;
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    private GameStatus status;
+    @ManyToOne
+    @JoinColumn(name = "developer_id")
+    private Developer developer;
 }
