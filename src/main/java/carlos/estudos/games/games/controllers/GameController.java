@@ -1,4 +1,4 @@
-package carlos.estudos.games.controllers;
+package carlos.estudos.games.games.controllers;
 
 import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -7,16 +7,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import carlos.estudos.games.Exceptions.RecordNotFoundException;
-import carlos.estudos.games.dtos.GameInputDto;
-import carlos.estudos.games.models.Developer;
-import carlos.estudos.games.models.Game;
-import carlos.estudos.games.repositories.DeveloperRepository;
-import carlos.estudos.games.repositories.GameRepository;
+import carlos.estudos.games.developers.models.Developer;
+import carlos.estudos.games.developers.repositories.DeveloperRepository;
+import carlos.estudos.games.games.dtos.GameInputDto;
+import carlos.estudos.games.games.dtos.GameOutputDto;
+import carlos.estudos.games.games.models.Game;
+import carlos.estudos.games.games.repositories.GameRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-
 
 @RestController
 @RequestMapping("/games")
@@ -31,32 +30,31 @@ public class GameController {
     }
 
     @GetMapping
-    public List<Game> getGames() {
-        return repository.findAll();
+    public List<GameOutputDto> getGames() {
+        return repository.findAll().stream().map(e -> gameToOutput(e)).toList();
     }
 
     @GetMapping("/{id}")
-    public Game getGame(@PathVariable Long id) {
+    public GameOutputDto getGame(@PathVariable Long id) {
         Game game = repository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Jogo não encontrado!"));
-        return game;
+        return gameToOutput(game);
     }
 
-
     @PostMapping()
-    public Game createGame(@RequestBody GameInputDto data) {
+    public GameOutputDto createGame(@RequestBody GameInputDto data) {
         Game game = new Game();
         game = parseInputToGame(game, data);
         repository.save(game);
-        return game;
+        return gameToOutput(game);
     }
 
     @PutMapping("/{id}")
-    public Game updateGame(@PathVariable Long id, @RequestBody GameInputDto data) {
+    public GameOutputDto updateGame(@PathVariable Long id, @RequestBody GameInputDto data) {
         Game game = repository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Jogo não encontrado!"));
         game = parseInputToGame(game, data);
-        return game;
+        return gameToOutput(game);
     }
 
     @DeleteMapping("/{id}")
@@ -73,5 +71,10 @@ public class GameController {
         game.setStatus(data.status());
         game.setDeveloper(developer);
         return game;
+    }
+
+    private GameOutputDto gameToOutput(Game game) {
+        return new GameOutputDto(game.getId(), game.getName(), game.getStatus(),
+                game.getDeveloper());
     }
 }
