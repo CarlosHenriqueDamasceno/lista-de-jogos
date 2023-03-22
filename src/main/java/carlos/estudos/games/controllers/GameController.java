@@ -1,25 +1,21 @@
-package carlos.estudos.games.games.controllers;
+package carlos.estudos.games.controllers;
+
+import carlos.estudos.games.Exceptions.RecordNotFoundException;
+import carlos.estudos.games.dtos.game.GameInputDto;
+import carlos.estudos.games.dtos.game.GameOutputDto;
+import carlos.estudos.games.models.Developer;
+import carlos.estudos.games.models.Game;
+import carlos.estudos.games.repositories.DeveloperRepository;
+import carlos.estudos.games.repositories.GameRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import carlos.estudos.games.Exceptions.RecordNotFoundException;
-import carlos.estudos.games.developers.models.Developer;
-import carlos.estudos.games.developers.repositories.DeveloperRepository;
-import carlos.estudos.games.games.dtos.GameInputDto;
-import carlos.estudos.games.games.dtos.GameOutputDto;
-import carlos.estudos.games.games.models.Game;
-import carlos.estudos.games.games.repositories.GameRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/games")
-public class GameController {
+@RequestMapping("/api/v1/games")
+public class GameController extends BaseController{
 
     private final GameRepository repository;
     private final DeveloperRepository developerRepository;
@@ -30,8 +26,8 @@ public class GameController {
     }
 
     @GetMapping
-    public List<GameOutputDto> getGames() {
-        return repository.findAll().stream().map(e -> gameToOutput(e)).toList();
+    public List<GameOutputDto> getGames(@RequestParam Optional<Integer> page, @RequestParam Optional<Integer> pageSize) {
+        return repository.findAll(parsePagination(page, pageSize)).stream().map(e -> gameToOutput(e)).toList();
     }
 
     @GetMapping("/{id}")

@@ -1,9 +1,9 @@
-package carlos.estudos.games.developers.models;
+package carlos.estudos.games.models;
 
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import carlos.estudos.games.games.models.Game;
+import carlos.estudos.games.models.Game;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
