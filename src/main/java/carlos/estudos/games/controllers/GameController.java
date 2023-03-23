@@ -8,8 +8,11 @@ import carlos.estudos.games.models.Game;
 import carlos.estudos.games.repositories.DeveloperRepository;
 import carlos.estudos.games.repositories.GameRepository;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,11 +41,12 @@ public class GameController extends BaseController{
     }
 
     @PostMapping()
-    public GameOutputDto createGame(@RequestBody GameInputDto data) {
+    public ResponseEntity<GameOutputDto> createGame(@RequestBody GameInputDto data) {
         Game game = new Game();
         game = parseInputToGame(game, data);
         repository.save(game);
-        return gameToOutput(game);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(game.getId()).toUri();
+        return ResponseEntity.created(location).body(gameToOutput(game));
     }
 
     @PutMapping("/{id}")
