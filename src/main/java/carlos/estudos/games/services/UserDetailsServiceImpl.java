@@ -1,4 +1,4 @@
-package carlos.estudos.games.configs;
+package carlos.estudos.games.services;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,17 +11,15 @@ import carlos.estudos.games.repositories.UserRepository;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-	private final UserRepository userRepository;
+	private final UserRepository repository;
 
-	public UserDetailsServiceImpl(UserRepository userRepository) {
-		this.userRepository = userRepository;
+	public UserDetailsServiceImpl(UserRepository repository) {
+		this.repository = repository;
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.findByEmail(username)
-				.orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+		User user = repository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Email inválido"));
 		return user;
 	}
-
 }

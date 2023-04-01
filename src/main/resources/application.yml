@@ -1,0 +1,16 @@
+app:
+  default-page-size: 3
+  secret-key: DfoK4@scR^MJ!7A7OhOP9KBd&YOq(s**RUGE$AQ$zckq0L%tHpW1*pnC6Y!2P^9C
+logging:
+  level:
+    root: info 
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: password
+    url: jdbc:mysql://localhost:3306/games
+    username: springuser
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

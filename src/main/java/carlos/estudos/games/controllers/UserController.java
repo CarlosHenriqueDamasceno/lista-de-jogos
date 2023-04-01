@@ -1,43 +1,35 @@
 package carlos.estudos.games.controllers;
 
 import java.net.URI;
+import java.time.Instant;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import carlos.estudos.games.configs.JwtProvider;
-import carlos.estudos.games.dtos.user.LoginDto;
 import carlos.estudos.games.dtos.user.UserInputDto;
 import carlos.estudos.games.dtos.user.UserOutputDto;
 import carlos.estudos.games.models.User;
 import carlos.estudos.games.repositories.UserRepository;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("api/v1/users")
+@AllArgsConstructor
 public class UserController {
 
 	private final UserRepository repository;
 	private final PasswordEncoder passwordEncoder;
-	private final AuthenticationConfiguration authenticationConfiguration;
-	private final JwtProvider jwtProvider;
-
-	public UserController(UserRepository repository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider,
-			AuthenticationConfiguration authenticationConfiguration) {
-		this.repository = repository;
-		this.passwordEncoder = passwordEncoder;
-		this.authenticationConfiguration = authenticationConfiguration;
-		this.jwtProvider = jwtProvider;
-	}
+	private final JwtEncoder jwtEncoder;
 
 	@PostMapping
 	public ResponseEntity<UserOutputDto> create(@RequestBody UserInputDto data) {
@@ -50,13 +42,8 @@ public class UserController {
 	}
 
 	@PostMapping("auth")
-	public String auth(@RequestBody LoginDto data) throws Exception {
-		AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
-
-		Authentication auth = authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(data.email(), data.password()));
-		SecurityContextHolder.getContext().setAuthentication(auth);
-		return jwtProvider.generateToken(auth);
+	public JwtResponse auth(Authentication authentication) {
+		return new JwtResponse(generateToken(authentication));
 	}
 
 	private User parseInputToUser(User user, UserInputDto data) {
@@ -69,4 +56,18 @@ public class UserController {
 	private UserOutputDto userToOutput(User user) {
 		return new UserOutputDto(user.getId(), user.getName(), user.getEmail());
 	}
+
+	private String generateToken(Authentication authentication) {
+		JwtClaimsSet claims = JwtClaimsSet.builder().issuer("self").issuedAt(Instant.now())
+				.subject(authentication.getName()).claim("scope", createScope(authentication)).build();
+		JwtEncoderParameters paramters = JwtEncoderParameters.from(claims);
+		return jwtEncoder.encode(paramters).getTokenValue();
+	}
+
+	private String createScope(Authentication authentication) {
+		return authentication.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.joining(" "));
+	}
+}
+
+record JwtResponse(String token) {
 }
