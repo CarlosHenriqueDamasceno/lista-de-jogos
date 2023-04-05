@@ -1,4 +1,4 @@
-package carlos.estudos.games.services;
+package carlos.estudos.games.services.User;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,7 +19,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = repository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Email inválido"));
+		User user = repository.findByEmail(username)
+				.orElseThrow(() -> new UsernameNotFoundException("Email inválido"));
 		return user;
 	}
 }

@@ -26,7 +26,7 @@ import carlos.estudos.games.repositories.GameRepository;
 
 @RestController
 @RequestMapping("/api/v1/games")
-public class GameController extends BaseController{
+public class GameController extends BaseController {
 
     private final GameRepository repository;
     private final DeveloperRepository developerRepository;
@@ -37,8 +37,10 @@ public class GameController extends BaseController{
     }
 
     @GetMapping
-    public List<GameOutputDto> getGames(@RequestParam Optional<Integer> page, @RequestParam Optional<Integer> pageSize) {
-        return repository.findAll(parsePagination(page, pageSize)).stream().map(e -> gameToOutput(e)).toList();
+    public List<GameOutputDto> getGames(@RequestParam Optional<Integer> page,
+            @RequestParam Optional<Integer> pageSize) {
+        return repository.findAll(parsePagination(page, pageSize)).stream()
+                .map(e -> gameToOutput(e)).toList();
     }
 
     @GetMapping("/{id}")
@@ -53,7 +55,8 @@ public class GameController extends BaseController{
         Game game = new Game();
         game = parseInputToGame(game, data);
         repository.save(game);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(game.getId()).toUri();
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(game.getId()).toUri();
         return ResponseEntity.created(location).body(gameToOutput(game));
     }
 

@@ -20,7 +20,7 @@ public class DeveloperController {
     }
 
     @GetMapping
-    public List<DeveloperOutputDto> getAll(){
+    public List<DeveloperOutputDto> getAll() {
         return repository.findAll().stream().map(e -> developerToOutput(e)).toList();
     }
 

@@ -39,8 +39,8 @@ public class UserController {
 		User user = new User();
 		user = parseInputToUser(user, data);
 		repository.save(user);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId())
-				.toUri();
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(user.getId()).toUri();
 		return ResponseEntity.created(location).body(userToOutput(user));
 	}
 
@@ -69,9 +69,11 @@ public class UserController {
 	}
 
 	private String createScope(UserDetails user) {
-		return user.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.joining(" "));
+		return user.getAuthorities().stream().map(a -> a.getAuthority())
+				.collect(Collectors.joining(" "));
 	}
 }
+
 
 record JwtResponse(String token) {
 }
