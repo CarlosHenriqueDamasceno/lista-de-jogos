@@ -1,5 +1,21 @@
 package carlos.estudos.games.controllers;
 
+import java.net.URI;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import carlos.estudos.games.Exceptions.RecordNotFoundException;
 import carlos.estudos.games.dtos.game.GameInputDto;
 import carlos.estudos.games.dtos.game.GameOutputDto;
@@ -7,14 +23,6 @@ import carlos.estudos.games.models.Developer;
 import carlos.estudos.games.models.Game;
 import carlos.estudos.games.repositories.DeveloperRepository;
 import carlos.estudos.games.repositories.GameRepository;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/games")
