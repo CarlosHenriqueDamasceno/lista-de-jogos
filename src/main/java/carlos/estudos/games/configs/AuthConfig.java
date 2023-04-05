@@ -34,10 +34,10 @@ public class AuthConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf().disable()
 				.authorizeHttpRequests(requests -> requests.requestMatchers(HttpMethod.POST, "/api/v1/users")
+						.permitAll().requestMatchers(HttpMethod.POST, "/api/v1/users/auth")
 						.permitAll().anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).cors();
 
-		http.httpBasic();
 		http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
 		return http.build();
 

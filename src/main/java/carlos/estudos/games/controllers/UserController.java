@@ -6,16 +6,20 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import carlos.estudos.games.dtos.user.LoginDto;
 import carlos.estudos.games.dtos.user.UserInputDto;
 import carlos.estudos.games.dtos.user.UserOutputDto;
 import carlos.estudos.games.models.User;
@@ -30,6 +34,7 @@ public class UserController {
 	private final UserRepository repository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtEncoder jwtEncoder;
+	private final UserDetailsService userDetailsService;
 
 	@PostMapping
 	public ResponseEntity<UserOutputDto> create(@RequestBody UserInputDto data) {
@@ -42,8 +47,9 @@ public class UserController {
 	}
 
 	@PostMapping("auth")
-	public JwtResponse auth(Authentication authentication) {
-		return new JwtResponse(generateToken(authentication));
+	public JwtResponse auth(@RequestBody LoginDto data) {
+		var user = userDetailsService.loadUserByUsername(data.email());
+		return new JwtResponse(generateToken(user));
 	}
 
 	private User parseInputToUser(User user, UserInputDto data) {
@@ -57,15 +63,15 @@ public class UserController {
 		return new UserOutputDto(user.getId(), user.getName(), user.getEmail());
 	}
 
-	private String generateToken(Authentication authentication) {
+	private String generateToken(UserDetails user) {
 		JwtClaimsSet claims = JwtClaimsSet.builder().issuer("self").issuedAt(Instant.now())
-				.subject(authentication.getName()).claim("scope", createScope(authentication)).build();
+				.subject(user.getUsername()).claim("scope", createScope(user)).build();
 		JwtEncoderParameters paramters = JwtEncoderParameters.from(claims);
 		return jwtEncoder.encode(paramters).getTokenValue();
 	}
 
-	private String createScope(Authentication authentication) {
-		return authentication.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.joining(" "));
+	private String createScope(UserDetails user) {
+		return user.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.joining(" "));
 	}
 }
 
