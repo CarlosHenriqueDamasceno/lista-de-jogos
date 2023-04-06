@@ -1,12 +1,7 @@
 package carlos.estudos.games.repositories;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import carlos.estudos.games.models.Game;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
-import java.util.Optional;
-
-public interface GameRepository extends PagingAndSortingRepository<Game, Long> {
-    public Optional<Game> findById(Long id);
-    public Game save(Game game);
-    public void delete(Game game);
+public interface GameRepository extends JpaRepository<Game, Long> {
 }
