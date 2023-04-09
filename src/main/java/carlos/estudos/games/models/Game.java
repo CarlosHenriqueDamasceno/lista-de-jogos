@@ -1,6 +1,5 @@
-package carlos.estudos.games.games.models;
+package carlos.estudos.games.models;
 
-import carlos.estudos.games.developers.models.Developer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,4 +24,8 @@ public class Game {
     @ManyToOne
     @JoinColumn(name = "developer_id")
     private Developer developer;
+
+    public enum GameStatus {
+        WAITING, PLAYING, COMPLETED,
+    }
 }
