@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import carlos.estudos.games.dtos.user.LoginDto;
 import carlos.estudos.games.dtos.user.LoginOutputDto;
-import carlos.estudos.games.services.User.LoginService;
+import carlos.estudos.games.services.user.LoginService;
 import lombok.AllArgsConstructor;
 
 @RestController

@@ -1,4 +1,4 @@
-package carlos.estudos.games.services.User;
+package carlos.estudos.games.services.user;
 
 import java.util.List;
 import org.springframework.data.domain.Pageable;

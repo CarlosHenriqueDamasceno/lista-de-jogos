@@ -17,7 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import carlos.estudos.games.dtos.user.UserInputDto;
 import carlos.estudos.games.dtos.user.UserOutputDto;
 import carlos.estudos.games.dtos.user.UserUpdateInputDto;
-import carlos.estudos.games.services.User.UserService;
+import carlos.estudos.games.services.user.UserService;
 import lombok.AllArgsConstructor;
 
 @RestController

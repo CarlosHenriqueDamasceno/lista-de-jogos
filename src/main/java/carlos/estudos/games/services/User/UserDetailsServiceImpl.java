@@ -1,4 +1,4 @@
-package carlos.estudos.games.services.User;
+package carlos.estudos.games.services.user;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
