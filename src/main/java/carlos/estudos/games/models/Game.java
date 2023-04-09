@@ -24,4 +24,8 @@ public class Game {
     @ManyToOne
     @JoinColumn(name = "developer_id")
     private Developer developer;
+
+    public enum GameStatus {
+        WAITING, PLAYING, COMPLETED,
+    }
 }
